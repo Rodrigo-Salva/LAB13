@@ -1,0 +1,11 @@
+bin/
+obj/
+.vs/
+*.user
+*.log
+Veterinaria.Api/appsettings.Development.json
+
+# Fuera del repositorio
+LAB13/
+*.docx
+~$*
