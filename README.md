@@ -1,4 +1,4 @@
-# Veterinaria API – Semana 13 (capas + DTOs + AutoMapper)
+# Veterinaria API – Semana 13
 
 ## Tema
 Clínica veterinaria: registra **dueños** y las **mascotas** que atiende, reemplazando fichas en papel.
