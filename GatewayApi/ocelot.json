@@ -102,6 +102,25 @@
           "Bearer"
         ]
       }
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/vacunas{everything}",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/vacunas{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5056
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
     }
   ],
   "GlobalConfiguration": {
