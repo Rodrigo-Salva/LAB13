@@ -17,10 +17,10 @@ Clínica veterinaria: registra **dueños** y las **mascotas** que atiende, reemp
 - **Negocio**: servicios, `MappingProfile`, `ReglaNegocioException`.
 - **Api**: `DuenosController`, `MascotasController`, `Program.cs` (DI, Swagger UI).
 
-Base de datos: [BaseDatos/Veterinaria.sql](BaseDatos/Veterinaria.sql) (con datos de ejemplo).
-Cadena de conexión: crear Veterinaria.Api/appsettings.Development.json (no se sube al repo) con la clave ConnectionStrings:VeterinariaDb apuntando a tu SQL Server.
+Base de datos: [BaseDatos/Veterinaria.sql](Veterinaria/BaseDatos/Veterinaria.sql) (con datos de ejemplo).
+Cadena de conexión: crear Veterinaria/Veterinaria.Api/appsettings.Development.json (no se sube al repo) con la clave ConnectionStrings:VeterinariaDb apuntando a tu SQL Server.
 
-Ejecutar: `dotnet run --project Veterinaria.Api` → `/swagger`.
+Ejecutar: `dotnet run --project Veterinaria/Veterinaria.Api` → `/swagger`.
 
 ## Endpoints (11)
 | Método | Ruta | Respuestas |
@@ -53,10 +53,10 @@ No se usa `ReverseMap()`: los DTOs de lectura nunca se convierten de vuelta a en
 Explorador de soluciones, MappingProfile completo, pruebas en Swagger/Postman de 200, 201, 204, 400, 404 y 409, y Observaciones/Conclusiones.
 
 ## Semana 14: autenticación JWT
-- Tabla `Usuarios` (Correo único, ClaveHash BCrypt, Rol) en `BaseDatos/Veterinaria.sql`, con un usuario por rol (clave de prueba: `Clave12345*`).
+- Tabla `Usuarios` (Correo único, ClaveHash BCrypt, Rol) en `Veterinaria/BaseDatos/Veterinaria.sql`, con un usuario por rol (clave de prueba: `Clave12345*`).
 - Endpoints: `POST api/auth/registro`, `POST api/auth/login`, `GET api/auth/perfil`.
 - Roles: **Recepcionista** (se asigna al registrarse) y **Veterinario** (se habilita con UPDATE en la BD). El rol lo decide siempre el servidor.
-- Configuración: crear `Veterinaria.Api/appsettings.Development.json` (no se sube) con `Jwt:Key` (mínimo 32 caracteres). `Emisor`, `Audiencia` y `Minutos` están en `appsettings.json`.
+- Configuración: crear `Veterinaria/Veterinaria.Api/appsettings.Development.json` (no se sube) con `Jwt:Key` (mínimo 32 caracteres). `Emisor`, `Audiencia` y `Minutos` están en `appsettings.json`.
 
 | Endpoint | Sin token | Recepcionista | Veterinario |
 |---|---|---|---|
@@ -65,3 +65,17 @@ Explorador de soluciones, MappingProfile completo, pruebas en Swagger/Postman de
 | GET duenos, mascotas (todos los GET) | Sí | Sí | Sí |
 | POST/PUT duenos y mascotas | No (401) | Sí | Sí |
 | DELETE duenos y mascotas | No (401) | No (403) | Sí |
+
+## Estructura del repositorio
+```
+GatewayApi/         API Gateway con Ocelot (puerto 5000)
+Veterinaria/        Microservicio 1: API en capas con JWT (puerto 5055) y BaseDatos/
+ServicioVacunas/    Microservicio 2: vacunas en memoria (puerto 5056), en capas: Api, Negocio, Datos, Entidades
+Veterinaria.sln
+```
+Ejecutar (una terminal por servicio):
+```
+dotnet run --project Veterinaria/Veterinaria.Api
+dotnet run --project ServicioVacunas/ServicioVacunas.Api
+dotnet run --project GatewayApi
+```
