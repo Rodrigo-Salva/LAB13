@@ -15,6 +15,25 @@
       ]
     },
     {
+      "UpstreamPathTemplate": "/gateway/auth/perfil",
+      "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "DownstreamPathTemplate": "/api/auth/perfil",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5055
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
+    },
+    {
       "UpstreamPathTemplate": "/gateway/duenos{everything}",
       "UpstreamHttpMethod": [
         "GET"
@@ -29,6 +48,27 @@
       ]
     },
     {
+      "UpstreamPathTemplate": "/gateway/duenos{everything}",
+      "UpstreamHttpMethod": [
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/duenos{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5055
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
+    },
+    {
       "UpstreamPathTemplate": "/gateway/mascotas{everything}",
       "UpstreamHttpMethod": [
         "GET"
@@ -41,6 +81,27 @@
           "Port": 5055
         }
       ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/mascotas{everything}",
+      "UpstreamHttpMethod": [
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "DownstreamPathTemplate": "/api/mascotas{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5055
+        }
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKeys": [
+          "Bearer"
+        ]
+      }
     }
   ],
   "GlobalConfiguration": {
