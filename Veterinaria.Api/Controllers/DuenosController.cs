@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Veterinaria.Entidades.Dtos;
 using Veterinaria.Negocio.Excepciones;
@@ -6,6 +7,7 @@ using Veterinaria.Negocio.Servicios;
 namespace Veterinaria.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class DuenosController : ControllerBase
 {
@@ -19,10 +21,12 @@ public class DuenosController : ControllerBase
     }
 
     /// <summary>Lista dueños; filtro opcional ?nombre=</summary>
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<DuenoDto>>> Get([FromQuery] string? nombre) =>
         Ok(await _duenos.ListarAsync(nombre));
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<DuenoDto>> GetPorId(int id)
     {
@@ -31,6 +35,7 @@ public class DuenosController : ControllerBase
     }
 
     /// <summary>Ruta anidada: mascotas de un dueño</summary>
+    [AllowAnonymous]
     [HttpGet("{id:int}/mascotas")]
     public async Task<ActionResult<List<MascotaDto>>> GetMascotas(int id)
     {
@@ -53,6 +58,7 @@ public class DuenosController : ControllerBase
     public async Task<IActionResult> Put(int id, DuenoActualizarDto dto) =>
         await _duenos.ActualizarAsync(id, dto) ? NoContent() : NotFound();
 
+    [Authorize(Roles = Roles.Veterinario)]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

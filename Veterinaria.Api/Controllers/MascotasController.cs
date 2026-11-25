@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Veterinaria.Entidades.Dtos;
 using Veterinaria.Negocio.Excepciones;
@@ -6,6 +7,7 @@ using Veterinaria.Negocio.Servicios;
 namespace Veterinaria.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class MascotasController : ControllerBase
 {
@@ -13,12 +15,14 @@ public class MascotasController : ControllerBase
     public MascotasController(IMascotaServicio servicio) => _servicio = servicio;
 
     /// <summary>Lista mascotas con filtros: ?especie=&amp;activo=&amp;pesoMin=&amp;pesoMax=</summary>
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<List<MascotaDto>>> Get(
         [FromQuery] string? especie, [FromQuery] bool? activo,
         [FromQuery] decimal? pesoMin, [FromQuery] decimal? pesoMax) =>
         Ok(await _servicio.ListarAsync(especie, activo, pesoMin, pesoMax));
 
+    [AllowAnonymous]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<MascotaDto>> GetPorId(int id)
     {
@@ -46,6 +50,7 @@ public class MascotasController : ControllerBase
         catch (ReglaNegocioException ex) { return Conflict(new { mensaje = ex.Message }); }
     }
 
+    [Authorize(Roles = Roles.Veterinario)]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id) =>
         await _servicio.EliminarAsync(id) ? NoContent() : NotFound();

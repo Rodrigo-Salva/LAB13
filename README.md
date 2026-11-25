@@ -51,3 +51,17 @@ No se usa `ReverseMap()`: los DTOs de lectura nunca se convierten de vuelta a en
 
 ## Pendiente por tu parte (capturas)
 Explorador de soluciones, MappingProfile completo, pruebas en Swagger/Postman de 200, 201, 204, 400, 404 y 409, y Observaciones/Conclusiones.
+
+## Semana 14: autenticación JWT
+- Tabla `Usuarios` (Correo único, ClaveHash BCrypt, Rol) en `BaseDatos/Veterinaria.sql`, con un usuario por rol (clave de prueba: `Clave12345*`).
+- Endpoints: `POST api/auth/registro`, `POST api/auth/login`, `GET api/auth/perfil`.
+- Roles: **Recepcionista** (se asigna al registrarse) y **Veterinario** (se habilita con UPDATE en la BD). El rol lo decide siempre el servidor.
+- Configuración: crear `Veterinaria.Api/appsettings.Development.json` (no se sube) con `Jwt:Key` (mínimo 32 caracteres). `Emisor`, `Audiencia` y `Minutos` están en `appsettings.json`.
+
+| Endpoint | Sin token | Recepcionista | Veterinario |
+|---|---|---|---|
+| POST auth/registro, POST auth/login | Sí | Sí | Sí |
+| GET auth/perfil | No (401) | Sí | Sí |
+| GET duenos, mascotas (todos los GET) | Sí | Sí | Sí |
+| POST/PUT duenos y mascotas | No (401) | Sí | Sí |
+| DELETE duenos y mascotas | No (401) | No (403) | Sí |
