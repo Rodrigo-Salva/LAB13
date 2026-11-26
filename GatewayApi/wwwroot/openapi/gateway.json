@@ -1,0 +1,582 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "API Gateway Veterinaria",
+    "version": "v1",
+    "description": "Todas las peticiones pasan por el gateway (Ocelot)."
+  },
+  "paths": {
+    "/gateway/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Iniciar sesión y obtener el token",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "correo": "recepcion@veterinaria.com",
+                "clave": "Clave12345*"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gateway/auth/registro": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Registrar usuario (rol Recepcionista)",
+        "responses": {
+          "201": {
+            "description": "Creado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "409": {
+            "description": "Regla de negocio incumplida"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "correo": "nuevo@veterinaria.com",
+                "clave": "Clave12345*"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/gateway/auth/perfil": {
+      "get": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Correo y rol del token",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/gateway/duenos": {
+      "get": {
+        "tags": [
+          "Dueños"
+        ],
+        "summary": "Listar dueños (público)",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "nombre",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Dueños"
+        ],
+        "summary": "Crear dueño",
+        "responses": {
+          "201": {
+            "description": "Creado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "409": {
+            "description": "Regla de negocio incumplida"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "nombre": "Ana Torres",
+                "dni": "11223344",
+                "telefono": "999888777",
+                "email": "ana@mail.com"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/gateway/duenos/{id}": {
+      "get": {
+        "tags": [
+          "Dueños"
+        ],
+        "summary": "Dueño por id (público)",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Dueños"
+        ],
+        "summary": "Actualizar dueño",
+        "responses": {
+          "204": {
+            "description": "Sin contenido"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "nombre": "Ana Torres Editada",
+                "telefono": "911222333",
+                "email": "ana@mail.com"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Dueños"
+        ],
+        "summary": "Eliminar dueño (solo Veterinario)",
+        "responses": {
+          "204": {
+            "description": "Sin contenido"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "403": {
+            "description": "El rol no tiene permiso"
+          },
+          "404": {
+            "description": "No existe"
+          },
+          "409": {
+            "description": "Regla de negocio incumplida"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/gateway/duenos/{id}/mascotas": {
+      "get": {
+        "tags": [
+          "Dueños"
+        ],
+        "summary": "Mascotas de un dueño (público)",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/gateway/mascotas": {
+      "get": {
+        "tags": [
+          "Mascotas"
+        ],
+        "summary": "Listar y filtrar mascotas (público)",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "parameters": [
+          {
+            "name": "especie",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "pesoMin",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "pesoMax",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Mascotas"
+        ],
+        "summary": "Crear mascota",
+        "responses": {
+          "201": {
+            "description": "Creado"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "404": {
+            "description": "No existe"
+          },
+          "409": {
+            "description": "Regla de negocio incumplida"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "nombre": "Toby",
+                "especie": "Perro",
+                "raza": "Beagle",
+                "edad": 2,
+                "peso": 10,
+                "duenoId": 1
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/gateway/mascotas/{id}": {
+      "get": {
+        "tags": [
+          "Mascotas"
+        ],
+        "summary": "Mascota por id (público)",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Mascotas"
+        ],
+        "summary": "Actualizar mascota",
+        "responses": {
+          "204": {
+            "description": "Sin contenido"
+          },
+          "400": {
+            "description": "Datos inválidos"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "404": {
+            "description": "No existe"
+          },
+          "409": {
+            "description": "Regla de negocio incumplida"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              },
+              "example": {
+                "nombre": "Toby II",
+                "especie": "Perro",
+                "raza": "Beagle",
+                "edad": 3,
+                "peso": 11,
+                "activo": true
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Mascotas"
+        ],
+        "summary": "Eliminar mascota (solo Veterinario)",
+        "responses": {
+          "204": {
+            "description": "Sin contenido"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "403": {
+            "description": "El rol no tiene permiso"
+          },
+          "404": {
+            "description": "No existe"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/gateway/vacunas": {
+      "get": {
+        "tags": [
+          "Vacunas (microservicio 2)"
+        ],
+        "summary": "Listar vacunas",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "502": {
+            "description": "Servicio apagado"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/gateway/vacunas/{id}": {
+      "get": {
+        "tags": [
+          "Vacunas (microservicio 2)"
+        ],
+        "summary": "Vacuna por id",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Sin token o credenciales inválidas"
+          },
+          "404": {
+            "description": "No existe"
+          },
+          "502": {
+            "description": "Servicio apagado"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Pega el token obtenido en /gateway/auth/login"
+      }
+    }
+  }
+}

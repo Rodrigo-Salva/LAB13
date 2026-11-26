@@ -36,6 +36,10 @@ builder.Services.AddOcelot(builder.Configuration);
 
 var app = builder.Build();
 
+// Swagger del gateway: va antes de Ocelot, que atiende todo lo demás
+app.UseStaticFiles();
+app.UseSwaggerUI(o => o.SwaggerEndpoint("/openapi/gateway.json", "API Gateway Veterinaria"));
+
 app.UseAuthentication();
 await app.UseOcelot();
 
