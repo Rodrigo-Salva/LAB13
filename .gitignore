@@ -9,3 +9,7 @@ obj/
 LAB13/
 *.docx
 ~$*
+
+# Despliegue: secretos y archivos generados
+.env
+deploy/generado/
